@@ -1,0 +1,22 @@
+﻿@model Category
+@{
+    Layout = "_Layout";
+}
+
+
+<div class="container mt-3">
+
+    <form asp-action="Update" asp-controller="Category" asp-area="Admin" method="post">
+            <input type="hidden" asp-for="@Model.Id" class="form-control" />
+        <div class="mb-3">
+            <label  class="form-label">Definition :</label>
+            <input asp-for="@Model.Definition"  class="form-control"/>
+        </div>
+        <div class="mb-3">
+           <button type="submit" class="btn btn-info">Save</button>
+        </div>
+    </form>
+   
+
+
+</div>

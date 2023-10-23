@@ -1,4 +1,4 @@
-﻿@model List<BlogApp.Data.Category>
+﻿@model List<Category>
 @{
     Layout = "_Layout";
 }
@@ -22,6 +22,10 @@
                         <td>@category.Id</td>
                         <td>@category.Definition</td>
                         <td>@category.SeoUrl</td>
+                        <td>
+                            <a asp-action="Update" asp-controller="Category" asp-area="Admin" asp-route-id="@category.Id">Update</a>
+                            <a>Remove</a>
+                        </td>
                     </tr>
                 }
             }

@@ -19,12 +19,14 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
+    //endpoints.MapAreaControllerRoute(name: "areaRoute", areaName: "Admin", pattern: "{Area}/{Controller=Category}/{Action=Index}/{id?}");
+
+    endpoints.MapControllerRoute(name: "area", pattern: "{Area}/{Controller=Category}/{Action=Index}/{id?}");
+  
+    
     endpoints.MapDefaultControllerRoute();
 
 
-    endpoints.MapAreaControllerRoute(name: "areaRoute", areaName: "Admin", pattern: "{Area}/{Controller=Category}/{Action=Index}/{id?}");
-
-    //endpoints.MapControllerRoute(name: "areaRoute2", pattern: "{Area}/{Controller}/{Action}/{id?}");
 
 });
 
