@@ -1,9 +1,11 @@
-﻿@model List<Category>
+﻿@using BlogApp.Controllers.Admin
+@model List<Category>
 @{
     Layout = "_Layout";
 }
 
 <div class="container mt-3">
+    <a asp-action="CreateOrUpdate" asp-controller="Category" asp-area="Admin" asp-route-type="@ViewType.Create">Add new record</a>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -23,7 +25,7 @@
                         <td>@category.Definition</td>
                         <td>@category.SeoUrl</td>
                         <td>
-                            <a asp-action="Update" asp-controller="Category" asp-area="Admin" asp-route-id="@category.Id">Update</a>
+                            <a asp-action="CreateOrUpdate" asp-controller="Category" asp-area="Admin" asp-route-id="@category.Id" asp-route-type="@ViewType.Update">Update</a>
                             <a>Remove</a>
                         </td>
                     </tr>

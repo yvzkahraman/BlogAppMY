@@ -3,6 +3,8 @@
 namespace BlogApp.Controllers.Admin
 {
     [Area("Admin")]
+
+    //SRP => SINGLE RESPONSIBILITY PRINCIPLE
     public class HomeController : Controller
     {
         public IActionResult Index()

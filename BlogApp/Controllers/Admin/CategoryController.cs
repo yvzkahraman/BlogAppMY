@@ -4,6 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Controllers.Admin
 {
+
+
+    public enum ViewType
+    {
+        Create = 0,
+        Update = 1,
+    }
+
+
+
     [Area("Admin")]
     public class CategoryController : Controller
     {
@@ -19,39 +29,79 @@ namespace BlogApp.Controllers.Admin
             var categories = this.context.Categories.AsNoTracking().ToList();
             return View(categories);
         }
-
-        public IActionResult Update(int id)
+     
+        public IActionResult CreateOrUpdate(int id, ViewType type)
         {
-            var updatedCategory = this.context.Categories.AsNoTracking().SingleOrDefault(x => x.Id == id);
+            ViewBag.Type = type;
+
+            if (type == ViewType.Update)
+            {
+                var updatedCategory = this.context.Categories.AsNoTracking().SingleOrDefault(x => x.Id == id);
 
 
-            return View(updatedCategory);
+                return View(updatedCategory);
+
+            }
+            else
+            {
+                return View(new Category());
+            }
+   
         }
 
         [HttpPost]
-        public IActionResult Update(Category category)
+        public IActionResult CreateOrUpdate(Category category)
         {
 
-            category.SeoUrl = category.Definition;
-
-            var updatedEntity =  this.context.Categories.SingleOrDefault(x=>x.Id == category.Id);   
-            
-            if(updatedEntity != null) {
-
-                updatedEntity.Definition = category.Definition;
-                updatedEntity.SeoUrl = category.SeoUrl;
-
+            if(category.Id == 0)
+            {
+                category.SeoUrl = ConvertSeoUrl(category.Definition);
+                this.context.Categories.Add(category);
                 this.context.SaveChanges();
             }
-          
-            
-            //Disconnected entity
-            //this.context.Update(category);
-            //this.context.SaveChanges();
+            else
+            {
+                var updatedEntity = this.context.Categories.SingleOrDefault(x => x.Id == category.Id);
 
+                if (updatedEntity != null)
+                {
 
-            return RedirectToAction("Index"); 
+                    if (updatedEntity.Definition != category.Definition)
+                    {
+                        updatedEntity.Definition = category.Definition;
+                        updatedEntity.SeoUrl = ConvertSeoUrl(category.Definition);
+                    }
 
+                    this.context.SaveChanges();
+                }
+               
+            }
+
+            return RedirectToAction("Index");
         }
+
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+
+
+        private string ConvertSeoUrl(string definition)
+        {
+            definition = definition.ToLower().Replace(' ', '-');
+            //şğüöçı
+            definition = definition.Replace('ş', 's');
+            definition = definition.Replace('ğ', 'g');
+            definition = definition.Replace('ü', 'u');
+            definition = definition.Replace('ö', 'o');
+            definition = definition.Replace('ç', 'c');
+            definition = definition.Replace('ı', 'i');
+            return definition;
+          
+        }
+
+
     }
 }
