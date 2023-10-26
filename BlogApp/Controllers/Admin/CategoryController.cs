@@ -87,6 +87,17 @@ namespace BlogApp.Controllers.Admin
         }
 
 
+        public IActionResult Remove(int id)
+        {          
+            var deletedCategory = this.context.Categories.SingleOrDefault(x => x.Id == id);
+            this.context.Categories.Remove(deletedCategory);
+
+            this.context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
 
         private string ConvertSeoUrl(string definition)
         {

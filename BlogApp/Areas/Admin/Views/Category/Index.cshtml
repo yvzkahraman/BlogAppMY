@@ -26,7 +26,7 @@
                         <td>@category.SeoUrl</td>
                         <td>
                             <a asp-action="CreateOrUpdate" asp-controller="Category" asp-area="Admin" asp-route-id="@category.Id" asp-route-type="@ViewType.Update">Update</a>
-                            <a>Remove</a>
+                            <a onclick="return confirm('Silmek istediğinizden emin misiniz ?')" asp-action="Remove" asp-controller="Category" asp-area="Admin" asp-route-id="@category.Id">Remove</a>
                         </td>
                     </tr>
                 }
