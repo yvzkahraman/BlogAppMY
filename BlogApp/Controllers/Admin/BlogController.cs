@@ -19,10 +19,31 @@ namespace BlogApp.Controllers.Admin
         [HttpGet]
         public IActionResult Index(BlogSearchModel model)
         {
+            //return new TestResult().ExecuteResultAsync;
+            //()
+            ViewBag.Active = "Blog";
             //if(model.CreatedDate == DateTime.MinValue && string.IsNullOrWhiteSpace(model.Title))
             //{
             //    return View();
             //}
+
+            // - bir sayfada kaç tane gözüksün.
+            //  hangi sayfadayız ??
+            //  kaç sayfam var.
+
+
+            // 100 =>  8 tane gözüksün
+            // 2 sayfadayım. ilk kaydı => 11
+            // 
+
+
+            // PageSize
+            // ActivePage
+            // Total
+
+
+           
+
 
             var query = this.context.Blogs.AsQueryable();
 
@@ -39,7 +60,13 @@ namespace BlogApp.Controllers.Admin
             }
             
 
-            var blogs = query.ToList();
+            // 0 kayıt geç, 5 kayıt çek => 1. sayfa => ActivePage 
+            //5 kayıt geç, 5 kayıt çek => 2. sayfa
+
+
+
+
+            var blogs = query.Skip((model.ActivePage-1)*model.PageSize).Take(model.PageSize).ToList();
             return View(blogs);
         }
 
