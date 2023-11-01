@@ -2,38 +2,40 @@
 @model List<Blog>
 @{
     Layout = "_Layout";
+
+    var pageModel = (BlogApp.Models.PageModel)ViewBag.PageModel;
 }
 
 <div class="container mt-3">
 
     <div class="card p-3">
-        
+
         <form>
             <div class="row">
                 <div class="col-12 mb-4">
                     <a asp-action="Create" asp-controller="Blog" asp-area="Admin">Add new record</a>
                 </div>
-              
+
                 <div class="col-4">
-                   
+
                     <input type="text" name="Title" placeholder="Başlık" class="form-control form-control-sm " />
                 </div>
-                
+
                 <div class="col-4">
                     <input type="date" placeholder="Oluşturulma Tarihi" name="CreatedDate" class="form-control form-control-sm" />
                 </div>
                 <div class="col-4">
-                 
+
 
                     <button type="submit" class="btn btn-primary btn-sm w-100 float-end">Search</button>
                 </div>
 
 
-               
+
             </div>
 
         </form>
-     
+
     </div>
 
 
@@ -41,7 +43,7 @@
     @if (Model != null)
     {
         <div class="p-3">
-         
+
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -79,8 +81,34 @@
         </div>
 
     }
+    <div class="float-end">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
 
-   
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= pageModel.PageCount ; i++)
+                {
+                    <li class="page-item"><a class="page-link @(pageModel.ActivePage == i?"active":"")" asp-action="Index" asp-controller="Blog" asp-route-ActivePage="@i">@i</a></li>                  
+                }
+
+              
+         
+
+
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
 
 </div>
 
@@ -90,22 +118,22 @@
 <!--
 
  blog =>
-   comment => 
-    
-  Berkay  +60 ilk projene 
-          +30 ikinci projene.
-          
+   comment =>
 
-  Murat   +30 ilk proje 
+  Berkay  +60 ilk projene
+          +30 ikinci projene.
+
+
+  Murat   +30 ilk proje
           +15 ikinci proje
 
 
    C#
 
-    Razor Page 
+    Razor Page
 
     Request => Cevap Vermede ve yorum yapmada Javascript kullanılabilir.
-    Listelemede Javascript yasak. 
+    Listelemede Javascript yasak.
 
     Yavuz : Cemil Selam,
         Cemil : Selam Yavuz,
@@ -121,5 +149,5 @@
                     Cihan : Seninde Selamına Selam.
             Hakan : Selam,
 
-                            
+
 -->
