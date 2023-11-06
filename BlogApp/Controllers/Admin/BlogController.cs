@@ -42,7 +42,7 @@ namespace BlogApp.Controllers.Admin
             {
 
                 query = query.Where(x => x.Title.Contains(model.Title));
-            }       
+            }
 
             ViewBag.PageModel = new PageModel
             {
@@ -63,16 +63,20 @@ namespace BlogApp.Controllers.Admin
         [HttpGet]
         public IActionResult AssignCategory(int id)
         {
+            ViewBag.SelectedBlog = this.context.Blogs.AsNoTracking().SingleOrDefault(x => x.Id == id); 
+
+
+
             var list = new List<AssignCategoryListModel>();
 
             var allCategories = this.context.Categories.AsNoTracking().ToList();
-            
-            
-            var filtredCategories = this.context.Categories.Join(this.context.BlogCategories, category=>category.Id, blog=>blog.CategoryId, (category, categoryBlog) =>new
+
+
+            var filtredCategories = this.context.Categories.Join(this.context.BlogCategories, category => category.Id, blog => blog.CategoryId, (category, categoryBlog) => new
             {
                 category,
                 categoryBlog,
-            }).Where(x=>x.categoryBlog.BlogId == id).Select(x=>new Category
+            }).Where(x => x.categoryBlog.BlogId == id).Select(x => new Category
             {
                 Definition = x.category.Definition,
                 Id = x.category.Id,
@@ -80,12 +84,12 @@ namespace BlogApp.Controllers.Admin
             }).AsNoTracking().ToList();
 
 
-            foreach (var category  in allCategories)
+            foreach (var category in allCategories)
             {
                 bool exist = false;
                 if (filtredCategories.Contains(category))
                 {
-                    exist = true;   
+                    exist = true;
                 }
                 list.Add(new AssignCategoryListModel
                 {
@@ -95,7 +99,6 @@ namespace BlogApp.Controllers.Admin
                     Exist = exist
                 });
             }
-
 
             return View(list);
         }
