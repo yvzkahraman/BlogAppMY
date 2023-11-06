@@ -1,7 +1,17 @@
 using BlogApp.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opt =>
+    {
+        opt.Cookie.HttpOnly = true;
+        opt.Cookie.SameSite = SameSiteMode.Strict;
+        opt.Cookie.Name = "LoginCookie";
+        opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    });
 
 builder.Services.AddDbContext<BlogDbContext>(opt =>
 {
@@ -17,18 +27,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseEndpoints(endpoints =>
-{
-    //endpoints.MapAreaControllerRoute(name: "areaRoute", areaName: "Admin", pattern: "{Area}/{Controller=Category}/{Action=Index}/{id?}");
-
-    endpoints.MapControllerRoute(name: "area", pattern: "{Area}/{Controller=Category}/{Action=Index}/{id?}");
-  
-    
-    endpoints.MapDefaultControllerRoute();
+app.UseAuthentication();
+app.UseAuthorization();
 
 
-
-});
+app.MapControllerRoute(name: "area", pattern: "{Area}/{Controller=Category}/{Action=Index}/{id?}");
+app.MapDefaultControllerRoute();
 
 
 app.Run();

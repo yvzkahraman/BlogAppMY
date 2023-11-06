@@ -1,0 +1,32 @@
+﻿@model BlogApp.Models.UserLoginModel
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <link href="~/theme/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="p-4">
+            <form asp-action="Login" asp-controller="Account" method="post" class="w-75 mx-auto shadow p-4">
+                <div class="mb-3">
+                    <label for="Username">Kullanıcı adı :</label>
+                    <input type="text" asp-for="Username" class="form-control"/>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Username">Şifre :</label>
+                    <input type="password" asp-for="Password" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

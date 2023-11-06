@@ -1,10 +1,12 @@
 ﻿using BlogApp.Data;
 using BlogApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Controllers.Admin
 {
+    [Authorize(Roles ="Admin")]
     [Area("Admin")]
     public class BlogController : Controller
     {

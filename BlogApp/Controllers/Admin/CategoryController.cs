@@ -1,4 +1,5 @@
 ﻿using BlogApp.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ namespace BlogApp.Controllers.Admin
 
 
 
+    [Authorize(Roles = "Admin")]
     [Area("Admin")]
     public class CategoryController : Controller
     {
