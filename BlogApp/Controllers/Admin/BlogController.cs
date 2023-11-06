@@ -63,7 +63,7 @@ namespace BlogApp.Controllers.Admin
         [HttpGet]
         public IActionResult AssignCategory(int id)
         {
-            ViewBag.SelectedBlog = this.context.Blogs.AsNoTracking().SingleOrDefault(x => x.Id == id); 
+            ViewBag.SelectedBlog = this.context.Blogs.AsNoTracking().SingleOrDefault(x => x.Id == id);
 
 
 
@@ -101,6 +101,38 @@ namespace BlogApp.Controllers.Admin
             }
 
             return View(list);
+        }
+
+        [HttpPost]
+        public IActionResult AssignCategory(List<AssignCategoryListModel> model)
+        {
+            // exist => true,
+            // exist => false
+
+            foreach (var assignCategory in model)
+            {
+                var control = this.context.BlogCategories.SingleOrDefault(x => x.BlogId == assignCategory.BlogId && x.CategoryId == assignCategory.Id);
+                if (assignCategory.Exist)
+                {
+
+                    if (control == null)
+                    {
+                        this.context.BlogCategories.Add(new BlogCategory { CategoryId = assignCategory.Id, BlogId = assignCategory.BlogId });
+                        this.context.SaveChanges();
+                    }
+                }
+
+                else
+                {
+                    if (control != null)
+                    {
+                        this.context.BlogCategories.Remove(control);
+                        this.context.SaveChanges();
+                    }
+                }
+            }
+
+            return RedirectToAction("Index");
         }
 
     }
