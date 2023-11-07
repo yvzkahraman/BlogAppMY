@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(opt =>
     {
@@ -12,6 +13,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         opt.Cookie.Name = "LoginCookie";
         opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     });
+
+
 
 builder.Services.AddDbContext<BlogDbContext>(opt =>
 {

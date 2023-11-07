@@ -14,6 +14,10 @@ namespace BlogApp.Controllers
         [HttpPost]
         public IActionResult Login(UserLoginModel model)
         {
+            //var cookie = HttpContext.Response.Cookies.Append("","",new CookieOptions
+            //{
+                
+            //})
             return View();
         }
     }
