@@ -15,7 +15,7 @@ namespace BlogApp.Controllers.Admin
 
 
 
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [Area("Admin")]
     public class CategoryController : Controller
     {

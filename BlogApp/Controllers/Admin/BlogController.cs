@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Controllers.Admin
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize]
     [Area("Admin")]
     public class BlogController : Controller
     {
@@ -25,6 +25,28 @@ namespace BlogApp.Controllers.Admin
         //        CreatedDate = DateTime.MinValue,
         //    });
         //}
+
+        public IActionResult Create()
+        {
+            return View(new BlogCreateModel());
+        }
+
+        [HttpPost]
+        public IActionResult Create(BlogCreateModel model)
+        {
+            this.context.Add(new Blog
+            {
+                CreatedDate = DateTime.Now,
+                Description = model.Description,
+                ShortDescription = model.ShortDescription,
+                SeoUrl = ConvertSeoUrl(model.Title),
+                ImageUrl = model.ImageUrl,
+                Title = model.Title,
+
+            });
+            this.context.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
 
         [HttpGet]
@@ -135,6 +157,66 @@ namespace BlogApp.Controllers.Admin
             }
 
             return RedirectToAction("Index");
+        }
+
+
+        public IActionResult Update(int id)
+        {
+            var updatedBlog = this.context.Blogs.SingleOrDefault(x=>x.Id == id);
+            return View(updatedBlog);
+        }
+
+        public IActionResult Remove(int id)
+        {
+            var removedBlog = this.context.Blogs.SingleOrDefault(x => x.Id == id);
+            if (removedBlog != null)
+            {
+                this.context.Remove(removedBlog);
+                this.context.SaveChanges();
+            }
+            
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Update(Blog blog)
+        {
+
+            var updatedBlog = this.context.Blogs.SingleOrDefault(x => x.Id == blog.Id);
+            if (updatedBlog != null)
+            {
+                updatedBlog.SeoUrl = ConvertSeoUrl(blog.SeoUrl);
+                updatedBlog.ShortDescription = blog.ShortDescription;
+                updatedBlog.Title = blog.Title;
+                updatedBlog.Description = blog.Description;
+                this.context.SaveChanges();
+
+                
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Böyle bir blog şuanda mevcut değil";
+                return View(blog);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+
+        private string ConvertSeoUrl(string definition)
+        {
+            definition = definition.ToLower().Replace(' ', '-');
+            //şğüöçı
+            definition = definition.Replace('ş', 's');
+            definition = definition.Replace('ğ', 'g');
+            definition = definition.Replace('ü', 'u');
+            definition = definition.Replace('ö', 'o');
+            definition = definition.Replace('ç', 'c');
+            definition = definition.Replace('ı', 'i');
+            return definition;
+
         }
 
     }
