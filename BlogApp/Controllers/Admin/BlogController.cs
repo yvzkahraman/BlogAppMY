@@ -1,5 +1,6 @@
 ﻿using BlogApp.Data;
 using BlogApp.Models;
+using BlogApp.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,18 +35,41 @@ namespace BlogApp.Controllers.Admin
         [HttpPost]
         public IActionResult Create(BlogCreateModel model)
         {
-            this.context.Add(new Blog
-            {
-                CreatedDate = DateTime.Now,
-                Description = model.Description,
-                ShortDescription = model.ShortDescription,
-                SeoUrl = ConvertSeoUrl(model.Title),
-                ImageUrl = model.ImageUrl,
-                Title = model.Title,
+            var validator = new BlogCreateModelValidator();
+            var validationResult = validator.Validate(model);
 
-            });
-            this.context.SaveChanges();
-            return RedirectToAction("Index");
+            if (validationResult.IsValid)
+            {
+                var addedBlog = new Blog();
+
+                var extension = Path.GetExtension(model.Image.FileName);
+                var newImageName = Guid.NewGuid().ToString() + extension;
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", newImageName);
+                var fileStream = new FileStream(path, FileMode.Create);
+                model.Image.CopyTo(fileStream);
+                addedBlog.ImageUrl = newImageName;
+
+                addedBlog.CreatedDate = DateTime.Now;
+                addedBlog.Description = model.Description;
+                addedBlog.ShortDescription = model.ShortDescription;
+                addedBlog.SeoUrl = ConvertSeoUrl(model.Title);
+                addedBlog.Title = model.Title;
+
+                this.context.Add(addedBlog);
+                this.context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+
+                return View(model);
+            }
+
         }
 
 
@@ -162,7 +186,7 @@ namespace BlogApp.Controllers.Admin
 
         public IActionResult Update(int id)
         {
-            var updatedBlog = this.context.Blogs.SingleOrDefault(x=>x.Id == id);
+            var updatedBlog = this.context.Blogs.SingleOrDefault(x => x.Id == id);
             return View(updatedBlog);
         }
 
@@ -174,7 +198,7 @@ namespace BlogApp.Controllers.Admin
                 this.context.Remove(removedBlog);
                 this.context.SaveChanges();
             }
-            
+
 
             return RedirectToAction("Index");
         }
@@ -192,7 +216,7 @@ namespace BlogApp.Controllers.Admin
                 updatedBlog.Description = blog.Description;
                 this.context.SaveChanges();
 
-                
+
             }
             else
             {
