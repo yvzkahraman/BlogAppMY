@@ -1,5 +1,5 @@
-﻿@using BlogApp.Controllers.Admin
-@model Blog
+﻿@using BlogApp.Models
+@model BlogUpdateModel
 @{
     Layout = "_Layout";
 }
@@ -7,7 +7,7 @@
 
 
 <div class="container mt-3">
-    <form asp-action="Update" asp-controller="Blog" asp-area="Admin" method="post">
+    <form asp-action="Update" asp-controller="Blog" asp-area="Admin" enctype="multipart/form-data" method="post">
         <input type="hidden" asp-for="Id" />
         <div class="mb-3">
             <label for="Title">Başlık :</label>
@@ -23,9 +23,22 @@
             <label for="Title"> Açıklama :</label>
             <textarea asp-for="Description" class="form-control"></textarea>
         </div>
-        <div class="mb-3">
-            <label for="Title">Resim:</label>
-            <input type="text" asp-for="ImageUrl" class="form-control" />
+        <div class="mb-5">
+            <div class="row">
+
+                <div class="col-3">
+                    <label for="PrevImage">Önceki Resim <i>(seçim yapmazsanız bu resim kalacak):</i></label>
+                    <img id="PrevImage" name="PrevImage" src="~/images/@Model.ImageUrl" style="height:100%; width:100%;" />
+                </div>
+
+                <div class="col-9">
+                    <label for="Title">Resim:</label>
+                    <input type="file" asp-for="Image" class="form-control" />
+                </div>
+
+            </div>
+
+          
         </div>
 
         @{
@@ -40,6 +53,9 @@
 
         <div class="mb-3">
             <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+
+        <div asp-validation-summary="All" class="text-danger lead">
         </div>
     </form>
 </div>

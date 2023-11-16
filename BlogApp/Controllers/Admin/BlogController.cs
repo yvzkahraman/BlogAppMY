@@ -187,7 +187,14 @@ namespace BlogApp.Controllers.Admin
         public IActionResult Update(int id)
         {
             var updatedBlog = this.context.Blogs.SingleOrDefault(x => x.Id == id);
-            return View(updatedBlog);
+            return View(new BlogUpdateModel
+            {
+                Id = updatedBlog.Id,
+                ImageUrl = updatedBlog.ImageUrl,
+                Description = updatedBlog.Description,
+                ShortDescription = updatedBlog.ShortDescription,
+                Title = updatedBlog.Title,
+            });
         }
 
         public IActionResult Remove(int id)
@@ -204,27 +211,63 @@ namespace BlogApp.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult Update(Blog blog)
+        public IActionResult Update(BlogUpdateModel model)
         {
 
-            var updatedBlog = this.context.Blogs.SingleOrDefault(x => x.Id == blog.Id);
-            if (updatedBlog != null)
+            var validator = new BlogUpdateModelValidator();
+            var validationResult = validator.Validate(model);
+
+            if (validationResult.IsValid)
             {
-                updatedBlog.SeoUrl = ConvertSeoUrl(blog.SeoUrl);
-                updatedBlog.ShortDescription = blog.ShortDescription;
-                updatedBlog.Title = blog.Title;
-                updatedBlog.Description = blog.Description;
-                this.context.SaveChanges();
+                var updatedBlog = this.context.Blogs.SingleOrDefault(x => x.Id == model.Id);
+
+                if (updatedBlog != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(updatedBlog.ImageUrl) && model.Image != null)
+                    {
+                        var pathControl = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", updatedBlog.ImageUrl);
+
+                        FileInfo fileInfo = new FileInfo(pathControl);
+                        if (fileInfo.Exists)
+                        {
+                            fileInfo.Delete();
+                        }
 
 
+                        var extension = Path.GetExtension(model.Image.FileName);
+                        var newImageName = Guid.NewGuid().ToString() + extension;
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", newImageName);
+                        var fileStream = new FileStream(path, FileMode.Create);
+                        model.Image.CopyTo(fileStream);
+
+                        updatedBlog.ImageUrl = newImageName;
+                    }
+
+
+                    updatedBlog.SeoUrl = ConvertSeoUrl(model.Title);
+                    updatedBlog.ShortDescription = model.ShortDescription;
+                    updatedBlog.Title = model.Title;
+                    updatedBlog.Description = model.Description;
+                    this.context.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Böyle bir blog şuanda mevcut değil";
+                    return View(model);
+                }
             }
             else
             {
-                ViewBag.ErrorMessage = "Böyle bir blog şuanda mevcut değil";
-                return View(blog);
-            }
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
 
-            return RedirectToAction("Index");
+                return View(model);
+            }
+            
         }
 
 

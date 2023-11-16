@@ -48,7 +48,7 @@
             <strong>Arama yaptınız !</strong>
 
             Arama filtreler : @searchModel.Title
-            @(searchModel.CreatedDate != DateTime.MinValue ? ", "+ searchModel.CreatedDate : "")
+            @(searchModel.CreatedDate != DateTime.MinValue ? ", " + searchModel.CreatedDate : "")
 
 
             <a asp-action="Index" asp-controller="Blog" asp-area="Admin">Filtreleri Kaldır</a>
@@ -69,6 +69,7 @@
                     <tr>
                         <th>Id</th>
                         <th>Title</th>
+                        <th>Image</th>
                         <th>SeoUrl</th>
                         <th>Created Date</th>
                         <th></th>
@@ -82,6 +83,9 @@
                             <tr>
                                 <td>@blog.Id</td>
                                 <td>@blog.Title</td>
+                                <td>
+                                    <img src="~/images/@blog.ImageUrl" height="200" width="200"/>
+                                </td>
                                 <td>@blog.SeoUrl</td>
                                 <td>@blog.CreatedDate</td>
                                 <td>
