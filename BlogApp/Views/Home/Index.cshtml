@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = "_Layout";
 }
 
@@ -18,18 +17,19 @@
         </div>
 
 
-        <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                The current link item
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-            <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-            <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-            <a class="list-group-item list-group-item-action disabled" aria-disabled="true">A disabled link item</a>
+
+        <div class="align-items-center" id="loadingCategoryScreen" >
+            <strong role="status">Loading...</strong>
+            <div class="spinner-border ms-auto" aria-hidden="true"></div>
+        </div>
+
+
+        <div class="list-group" id="categoryScreen">
+       
         </div>
     </div>
 
-    <div class="col-lg-9 col-md-8"> 
+    <div class="col-lg-9 col-md-8">
 
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
@@ -116,10 +116,58 @@
                 </ul>
             </nav>
         </div>
-       
+
     </div>
 
 </div>
+
+@section Ajax{
+    <script>
+        $(document).ready(function () {
+            let url = '@Url.Action("GetCategories", "Home")';
+            $.ajax({
+                type: 'GET',
+                url: url,
+                beforeSend: function () {
+                    $("#categoryScreen").css("display", "none");
+                    $('#loadingCategoryScreen').css("display", "flex")
+                },
+                contentType: false,
+                cache: false,
+                success: function (response) {
+                    console.log("gelen response : ", response)
+                    $('#loadingCategoryScreen').css("display", "none");
+
+                    let html = '';
+
+                    $("#categoryScreen").css("display", "block");
+
+                    response.forEach(x => {
+                        if (x.id == 8) {
+                            html += `<a href="#" class="list-group-item list-group-item-action active">${x.definition}</a>`
+                        }
+                        else {
+                            html += `<a href="#" class="list-group-item list-group-item-action">${x.definition}</a>`
+                        }
+                     
+                    })
+                  
+                    console.log("category screen none oldu")
+
+                    $("#categoryScreen").html(html);
+                },
+                error: function (error){
+                    console.log("gelen response : ", response)
+                    $('#loadingCategoryScreen').css("display", "none")
+                    $("#categoryScreen").css("display", "block");
+                }
+                
+
+            })
+
+        });
+    </script>
+}
 
 
 

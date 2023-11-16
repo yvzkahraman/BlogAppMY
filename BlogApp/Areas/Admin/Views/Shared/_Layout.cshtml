@@ -19,10 +19,8 @@
             <div class="list-group list-group-flush">
                 <a class="list-group-item list-group-item-action @(ViewBag.Active=="Category"?"active":"") p-3" asp-action="Index" asp-controller="Category" asp-area="Admin">Kategoriler</a>
                 <a class="list-group-item list-group-item-action @(ViewBag.Active=="Blog"?"active":"")  p-3" asp-action="Index" asp-controller="Blog" asp-area="Admin">Bloglar</a>
-                <a class="list-group-item list-group-item-action  p-3" href="#!">Overview</a>
-                <a class="list-group-item list-group-item-action  p-3" href="#!">Events</a>
-                <a class="list-group-item list-group-item-action  p-3" href="#!">Profile</a>
-                <a class="list-group-item list-group-item-action  p-3" href="#!">Status</a>
+                <a class="list-group-item list-group-item-action  p-3" asp-action="Logout" asp-controller="Account" asp-area="">Logout</a>
+               
             </div>
         </div>
         <!-- Page content wrapper-->
