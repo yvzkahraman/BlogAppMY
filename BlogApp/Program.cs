@@ -15,6 +15,17 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("default", conf =>
+    {
+        conf.WithOrigins(new string[]
+        {
+            "http://127.0.0.1:5500"
+        }).AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 
 builder.Services.AddDbContext<BlogDbContext>(opt =>
 {
@@ -29,6 +40,8 @@ var app = builder.Build();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors("default");
 
 app.UseAuthentication();
 app.UseAuthorization();
